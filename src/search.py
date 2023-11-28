@@ -6,6 +6,11 @@ from utils import serialize_object_ids
 
 @app.route("/find/<text>", methods=["GET"])
 @jwt_required()  # Requires a valid JWT token
-def search(text):
-  
-        return jsonify({"message": f"No items found for text: {text}", "code": 404})
+def find(text):
+    items = items_db.find({"name": {"$regex": f".*{text}.*", "$options": "i"}})
+    if items:
+        return jsonify(
+            {"items":  items, "message": "Success", "code": 200}
+        )
+    else:
+        return jsonify({"message": "No items found", "code": 404})
