@@ -1,16 +1,19 @@
 import json
-from app import app, items_db
-from flask import request, jsonify
+from app import app,items_db
+from utils import convert_to_json_serializable
+from flask import jsonify
 from flask_jwt_extended import jwt_required
-from utils import serialize_object_ids
+
 
 @app.route("/find/<text>", methods=["GET"])
 @jwt_required()  # Requires a valid JWT token
 def find(text):
     items = items_db.find({"name": {"$regex": f".*{text}.*", "$options": "i"}})
+    items_serializable = json.loads(json.dumps(list(items), default=convert_to_json_serializable))
+
     if items:
         return jsonify(
-            {"items":  items, "message": "Success", "code": 200}
+            {"items": items_serializable, "message": "Success", "code": 200}
         )
-    else:
-        return jsonify({"message": "No items found", "code": 404})
+
+    return jsonify({"message": "Items not found", "code": 404})
