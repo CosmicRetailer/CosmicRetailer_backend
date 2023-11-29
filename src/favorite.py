@@ -3,8 +3,8 @@ from flask import jsonify, request
 from bson.objectid import ObjectId
 from flask_jwt_extended import jwt_required, current_user  # Import JWT
 import requests
-from utils import serialize_object_ids
-
+from utils import serialize_object_ids,convert_to_json_serializable
+import json
 # Define an endpoint for toggling favorite item by item_id
 @app.route("/toggle_favorite/<item_id>", methods=["PUT"])
 @jwt_required()  # Requires a valid JWT token
@@ -81,6 +81,9 @@ def get_favorites():
                     {"$set": {"favorites": favorite_items}},
                 )
 
-        return jsonify({"favorites": serialize_object_ids(favorites), "message": "Success", "code": 200})
+        # Serialize items to JSON
+        items_serializable = json.loads(json.dumps(favorites, default=convert_to_json_serializable))
+
+        return jsonify({"favorites": serialize_object_ids(items_serializable), "message": "Success", "code": 200})
     else:
         return jsonify({"message": "User not found", "code": 404})
