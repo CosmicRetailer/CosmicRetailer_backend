@@ -86,6 +86,6 @@ def get_favorites():
         # Serialize items to JSON
         items_serializable = json.loads(json.dumps(favorites, default=convert_to_json_serializable))
 
-        return jsonify({"favorites":items_serializable, "message": "Success", "code": 200})
+        return jsonify({"favorites": items_serializable, "message": "Success", "code": 200})
     else:
         return jsonify({"message": "User not found", "code": 404})
