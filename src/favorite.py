@@ -67,10 +67,10 @@ def get_favorites():
 
     if user:
         favorite_items = user.get("favorites", [])
-        favorites = []
+        # favorites = []
 
-        for item_id in favorite_items.copy():  # Iterate over item IDs
-            item_doc = items_db.find_one({"_id": ObjectId(item_id)})  # Use ObjectId
+        # for item_id in favorite_items.copy():  # Iterate over item IDs
+        #     item_doc = items_db.find_one({"_id": ObjectId(item_id)})  # Use ObjectId
     #         if item_doc:
     #             item_doc["_id"] = str(item_doc["_id"])
     #             favorites.append(item_doc)
