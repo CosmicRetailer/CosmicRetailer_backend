@@ -5,7 +5,7 @@ from flask_jwt_extended import jwt_required, current_user  # Import JWT
 import requests
 from utils import serialize_object_ids
 
-# Define an endpoint for toggle favorite item by item_id
+# Define an endpoint for toggling favorite item by item_id
 @app.route("/toggle_favorite/<item_id>", methods=["PUT"])
 @jwt_required()  # Requires a valid JWT token
 def toggle_favorite(item_id):
@@ -23,7 +23,7 @@ def toggle_favorite(item_id):
 
         favorite_items = user.get("favorites", [])
 
-        for item in favorite_items:
+        for item in favorite_items.copy():  # Use copy() to iterate over a copy
             if item["_id"] == item_id:
                 favorite_items.remove(item)
                 users_db.update_one(
@@ -67,17 +67,15 @@ def get_favorites():
 
     if user:
         favorite_items = user.get("favorites", [])
-        favorite_items_copy = favorite_items.deepcopy()
         favorites = []
 
-        for item in favorite_items_copy:
-            item_id = item["_id"]
-            item = items_db.find_one({"_id": item_id})
-            if item:
-                item["_id"] = str(item["_id"])
-                favorites.append(item)
+        for item_id in favorite_items.copy():  # Iterate over item IDs
+            item_doc = items_db.find_one({"_id": ObjectId(item_id)})  # Use ObjectId
+            if item_doc:
+                item_doc["_id"] = str(item_doc["_id"])
+                favorites.append(item_doc)
             else: 
-                favorite_items.remove(item)
+                favorite_items.remove(item_id)  # Remove item ID
                 users_db.update_one(
                     {"_id": user["_id"]},
                     {"$set": {"favorites": favorite_items}},
