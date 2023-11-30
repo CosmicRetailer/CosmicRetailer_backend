@@ -86,7 +86,7 @@ def get_favorites():
                 )
 
         # Serialize items to JSON
-        items_serializable = json.loads(json.dumps(favorites, default=convert_to_json_serializable))
+        items_serializable = serialize_object_ids(favorites)
 
         return jsonify({"favorites": items_serializable, "message": "Success", "code": 200})
     else:
