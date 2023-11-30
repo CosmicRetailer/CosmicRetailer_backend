@@ -76,14 +76,14 @@ def get_favorites():
             if item_doc:
                 favorites.append(item_doc)
             else: 
-                favorite_items.remove(item_id)  # Remove item ID
+                favorite_items.remove(item)  # Remove item ID
                 users_db.update_one(
                     {"_id": user["_id"]},
                     {"$set": {"favorites": favorite_items}},
                 )
 
         # Serialize items to JSON
-        items_serializable = json.loads(json.dumps(favorites, default=serialize_object_ids))
+        items_serializable = json.loads(json.dumps(favorites, default=convert_to_json_serializable))
 
         return jsonify({"favorites": items_serializable, "message": "Success", "code": 200})
     else:
