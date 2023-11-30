@@ -33,7 +33,7 @@ def add_rating():
         seller_points = sum(
             rating["rating"] for rating in seller_ratings
         ) / len(seller_ratings)
-        seller["points"] = seller_points
+        seller["rating_avg"] = seller_points
 
         # Update the seller's user document in the database
         users_db.update_one(
