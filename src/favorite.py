@@ -70,9 +70,9 @@ def get_favorites():
         favorite_items = user.get("favorites", [])
         favorites = []
 
-        for item_id in favorite_items.copy():  # Iterate over item IDs
-            item = ObjectId(item_id)
-            item_doc = items_db.find_one({"_id": item})  # Use ObjectId
+        for item_obj in favorite_items.copy():  # Iterate over objects
+            item = ObjectId(item_obj["_id"])  # Convert to ObjectId
+            item_doc = items_db.find_one({"_id": item})  # Use ObjectId in query
             if item_doc:
                 favorites.append(item_doc)
             else: 
@@ -84,7 +84,7 @@ def get_favorites():
 
         # Serialize items to JSON
         items_serializable = json.loads(json.dumps(favorites, default=serialize_object_ids))
-        
+
         return jsonify({"favorites": items_serializable, "message": "Success", "code": 200})
     else:
         return jsonify({"message": "User not found", "code": 404})
