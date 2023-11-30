@@ -74,9 +74,6 @@ def get_favorites():
             item = ObjectId(item_id)
             item_doc = items_db.find_one({"_id": item})  # Use ObjectId
             if item_doc:
-                item_serializable = json.loads(json.dumps(item_doc, default=convert_to_json_serializable))
-                return jsonify({"favorites": item_serializable, "message": "Success", "code": 200})
-
                 favorites.append(item_doc)
             else: 
                 favorite_items.remove(item_id)  # Remove item ID
