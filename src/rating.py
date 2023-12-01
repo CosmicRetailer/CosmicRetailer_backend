@@ -38,7 +38,7 @@ def add_rating():
         # Update the seller's user document in the database
         users_db.update_one(
             {"_id": seller["_id"]},
-            {"$set": {"ratings": seller_ratings, "points": seller_points}},
+            {"$set": {"ratings": seller_ratings, "rating_avg": seller_points}},
         )
 
         # Add the rating to the ratings collection
