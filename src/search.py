@@ -1,14 +1,17 @@
 import json
-from app import app,items_db
+from app import app, items_db
 from utils import convert_to_json_serializable
 from flask import jsonify
 from flask_jwt_extended import jwt_required
 
-
 @app.route("/find/<text>", methods=["GET"])
 @jwt_required()  # Requires a valid JWT token
 def find(text):
-    items = items_db.find({"name": {"$regex": f".*{text}.*", "$options": "i"}})
+    if not text:  # If text is empty, return all items
+        items = items_db.find()
+    else:
+        items = items_db.find({"name": {"$regex": f".*{text}.*", "$options": "i"}})
+
     items_serializable = json.loads(json.dumps(list(items), default=convert_to_json_serializable))
 
     if items:
@@ -18,11 +21,14 @@ def find(text):
 
     return jsonify({"message": "Items not found", "code": 404})
 
-
 @app.route("/find_tag/<text>", methods=["GET"])
 @jwt_required()  # Requires a valid JWT token
 def find_tag(text):
-    items = items_db.find({"category": {"$regex": f".*{text}.*", "$options": "i"}})
+    if not text:  # If text is empty, return all items
+        items = items_db.find()
+    else:
+        items = items_db.find({"category": {"$regex": f".*{text}.*", "$options": "i"}})
+
     items_serializable = json.loads(json.dumps(list(items), default=convert_to_json_serializable))
 
     if items:
