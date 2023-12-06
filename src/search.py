@@ -21,9 +21,11 @@ def find(text):
 
     return jsonify({"message": "Items not found", "code": 404})
 
-@app.route("/find_tag/<text>", methods=["GET"])
+@app.route("/find_tag", methods=["GET"])
 @jwt_required()  # Requires a valid JWT token
-def find_tag(text):
+def find_tag():
+    text = request.args.get('text', '')  # Get the 'text' query parameter or use an empty string if not present
+
     if not text:  # If text is empty, return all items
         items = items_db.find()
     else:
@@ -37,3 +39,4 @@ def find_tag(text):
         )
 
     return jsonify({"message": "Items not found", "code": 404})
+
