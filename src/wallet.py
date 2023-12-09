@@ -93,17 +93,26 @@ def buyItem(item_id):
         {"_id": ObjectId(current_user['_id'])}, {"$push": {"history": {
             "itemId": item_id,
             "txHash": str(web3.to_hex(tx_hash)),
-            "type": "buy"
+            "type": "buy",
+            "itemName": item['name'],
+            "price": item['price'],
+            "photoUrl": item['photoUrl'],
         }}}
     )
 
-    users_db.find_one_and_update(
+    hello = users_db.find_one_and_update(
         {"_id": ObjectId(current_user['_id'])}, {"$push": {"history": {
             "itemId": item_id,
             "txHash": str(web3.to_hex(tx_hash)),
-            "type": "sell"
+            "type": "sell",
+            "itemName": item['name'],
+            "price": item['price'],
+            "photoUrl": item['photoUrl'],
         }}}
     )
+
+    if hello['n'] > 0:
+        return jsonify({'message': 'cant buy your own item', "code": 400})
     # users_db.update_one(
     #     {"_id": ObjectId(item['userId'])}, {"$push": {"history": {
     #         "itemId": item_id,
