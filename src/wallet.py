@@ -117,7 +117,7 @@ def buyItem(item_id):
     )
 
     if hello['n'] == 0:
-        return jsonify({'message': 'cant buy your own item', "code": 400}), 400
+        return jsonify({'message': 'cant buy your own item', "code": 410}), 400
     # users_db.update_one(
     #     {"_id": ObjectId(item['userId'])}, {"$push": {"history": {
     #         "itemId": item_id,
