@@ -21,11 +21,11 @@ def getBalance():
 def buyItem(item_id):
     pvk = request.json.get("privateKey")
     if pvk is None:
-        return jsonify({'message': 'can\'t buy an item', "code": 400})
+        return jsonify({'message': 'can\'t buy an item', "code": 400}), 400
 
     item = items_db.find_one({'_id': ObjectId(item_id)})
     if item is None:
-        return jsonify({'message': 'item not found', "code": 404})
+        return jsonify({'message': 'item not found', "code": 404}), 404
 
     headers = {"Authorization": f"{request.headers.get('Authorization')}"}
     response = requests.get("https://cosmicretailer.onrender.com/get_user_wallet/" + item['userId'], headers=headers)
@@ -43,7 +43,7 @@ def buyItem(item_id):
     print('balance_usdt & balance & price', balance_usdt, balance, item['price'])
 
     if balance_usdt < item['price'] + 0.1:
-        return jsonify({'message': 'not enough money', "code": 400})
+        return jsonify({'message': 'not enough money', "code": 400}), 400
     
     api_request = "https://min-api.cryptocompare.com/data/price?fsym=USDT&tsyms=ETH"
     response = requests.get(api_request)
@@ -102,7 +102,7 @@ def buyItem(item_id):
     )
 
     if hello['n'] == 0:
-        return jsonify({'message': 'cant buy your own item', "code": 401})
+        return jsonify({'message': 'cant buy your own item', "code": 401}), 401
 
     hello = users_db.find_one_and_update(
         {"_id": ObjectId(item['userId'])}, {"$push": {"history": {
@@ -116,7 +116,7 @@ def buyItem(item_id):
     )
 
     if hello['n'] == 0:
-        return jsonify({'message': 'cant buy your own item', "code": 400})
+        return jsonify({'message': 'cant buy your own item', "code": 400}), 400
     # users_db.update_one(
     #     {"_id": ObjectId(item['userId'])}, {"$push": {"history": {
     #         "itemId": item_id,
@@ -145,4 +145,4 @@ def buyItem(item_id):
         {"_id": ObjectId(item_id)}
     )
 
-    return jsonify({'message': 'success', "hash": str(web3.to_hex(tx_hash)), "code": 200})
+    return jsonify({'message': 'success', "hash": str(web3.to_hex(tx_hash)), "code": 200}), 200
