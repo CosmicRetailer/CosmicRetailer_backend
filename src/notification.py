@@ -11,7 +11,7 @@ import json
 def get_notifications():
     user_id = ObjectId(current_user["_id"])
 
-    notifications = notifications_db.find({"userId": user_id})
+    notifications = notifications_db.find_one({"userId": user_id})
     if notifications:
         notifications_serializable = json.loads(
             json.dumps(notifications, default=convert_to_json_serializable)
