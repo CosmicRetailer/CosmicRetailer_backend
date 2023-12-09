@@ -106,4 +106,8 @@ def buyItem(item_id):
     # delete item from items_db
     items_db.delete_one({'_id': ObjectId(item_id)})
 
+
+
+    
+
     return jsonify({'message': 'success', "hash": str(web3.to_hex(tx_hash)), "code": 200})
