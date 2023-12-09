@@ -106,7 +106,7 @@ def buyItem(item_id):
         return jsonify({'message': 'cant buy your own item', "code": 401}), 401
 
     hello = users_db.find_one_and_update(
-        {"_id": ObjectId(item['userId'])}, {"$push": {"history": {
+        {"_id": item['userId']}, {"$push": {"history": {
             "itemId": item_id,
             "txHash": str(web3.to_hex(tx_hash)),
             "type": "sell",
@@ -116,7 +116,6 @@ def buyItem(item_id):
         }}}
     )
 
-    logging.debug('This is a debug message')
     if hello['n'] == 0:
         return jsonify({'message': 'cant buy your own item', "code": 400}), 400
     # users_db.update_one(
