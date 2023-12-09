@@ -36,6 +36,7 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 users_db = mongo_client["data"]["users"]
 items_db = mongo_client["data"]["items"]
 ratings_db = mongo_client["data"]["ratings"]
+notifications_db = mongo_client["data"]["notifications"]
 
 # rationale for that kind of imports:
 # https://stackoverflow.com/questions/11994325/how-to-divide-flask-app-into-multiple-py-files
@@ -48,3 +49,4 @@ import bucket as bucket
 import search as search
 import rating as rating
 import wallet as wallet
+import notification as notification
