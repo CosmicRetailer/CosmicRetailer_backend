@@ -71,6 +71,16 @@ def buyItem(item_id):
 
     print("Transaction hash: " + str(web3.to_hex(tx_hash)))
 
+    data = {
+        "itemId": item_id,
+        "itemName": item['name']
+    }
+    response = requests.get(
+        "https://cosmicretailer.onrender.com/create_notification/" + item['userId'], 
+        headers=headers,
+        data=data
+    )
+
     # add item to user's history
     users_db.update_one(
         {"_id": ObjectId(current_user['_id'])}, {"$push": {"history": {
@@ -105,9 +115,5 @@ def buyItem(item_id):
 
     # delete item from items_db
     items_db.delete_one({'_id': ObjectId(item_id)})
-
-
-
-    
 
     return jsonify({'message': 'success', "hash": str(web3.to_hex(tx_hash)), "code": 200})

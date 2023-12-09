@@ -1,6 +1,6 @@
 from io import BytesIO
 from app import app, notifications_db
-from utils import convert_to_json_serializable
+from utils import convert_to_json_serializable, serialize_object_ids
 from flask import jsonify, request
 from bson.objectid import ObjectId
 from flask_jwt_extended import jwt_required, current_user  # Import JWT
@@ -13,9 +13,7 @@ def get_notifications():
 
     notifications = notifications_db.find({"userId": user_id})
     if notifications:
-        notifications_serializable = json.loads(
-            json.dumps(notifications, default=convert_to_json_serializable)   
-        )
+        notifications_serializable = serialize_object_ids(notifications)
 
         # delte notification from db
         notifications_db.delete_many({"userId": user_id})
