@@ -17,9 +17,8 @@ def get_notifications():
             json.dumps(notifications, default=convert_to_json_serializable)
         )
 
-        # TODO uncomment this
         # delte notification from db
-        # notifications_db.delete_many({"userId": user_id})
+        notifications_db.delete_many({"userId": user_id})
 
         return jsonify({
             "notification": notifications_serializable,
