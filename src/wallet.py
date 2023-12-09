@@ -54,11 +54,11 @@ def buyItem(item_id):
     print('value', web3.to_wei(balance_eth, 'ether'))
     print('lol balance', balance / response.json()['ETH'])
     
-    nonce = web3.eth.get_transaction_count(from_account)  
+    nonce = web3.eth.get_transaction_count(account)  
     tx = {
         'type': '0x2',
         'nonce': nonce,
-        'from': from_account,
+        'from': account,
         'to': to_account,
         'value': web3.to_wei(balance_eth, 'ether'),
         'maxFeePerGas': web3.to_wei('250', 'gwei'),
