@@ -6,6 +6,7 @@ from bson.objectid import ObjectId
 from flask_jwt_extended import jwt_required, current_user  # Import JWT
 import json
 import requests
+import logging
 
 @app.route('/get_balance', methods=['GET'])
 @jwt_required()
@@ -115,6 +116,7 @@ def buyItem(item_id):
         }}}
     )
 
+    logging.debug('This is a debug message')
     if hello['n'] == 0:
         return jsonify({'message': 'cant buy your own item', "code": 400}), 400
     # users_db.update_one(
