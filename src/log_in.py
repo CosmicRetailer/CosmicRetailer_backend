@@ -114,7 +114,6 @@ def register():
 @app.route("/logout", methods=["POST"])
 @jwt_required()
 def logout():
-    # TODO jwt logout - delete token on client side
     jsonify({"message": "Success", "code": 200})
 
 

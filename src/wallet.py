@@ -81,6 +81,7 @@ def buyItem(item_id):
         data=data
     )
 
+    # TODO why is this not working? change update?
     # add item to user's history
     # users_db.update_one(
     #     {"_id": ObjectId(current_user['_id'])}, {"$push": {"history": {
