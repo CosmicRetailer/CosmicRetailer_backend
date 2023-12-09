@@ -82,7 +82,14 @@ def buyItem(item_id):
     )
 
     # add item to user's history
-    users_db.update_one(
+    # users_db.update_one(
+    #     {"_id": ObjectId(current_user['_id'])}, {"$push": {"history": {
+    #         "itemId": item_id,
+    #         "txHash": str(web3.to_hex(tx_hash)),
+    #         "type": "buy"
+    #     }}}
+    # )
+    users_db.find_one_and_update(
         {"_id": ObjectId(current_user['_id'])}, {"$push": {"history": {
             "itemId": item_id,
             "txHash": str(web3.to_hex(tx_hash)),
@@ -90,13 +97,20 @@ def buyItem(item_id):
         }}}
     )
 
-    users_db.update_one(
-        {"_id": ObjectId(item['userId'])}, {"$push": {"history": {
+    users_db.find_one_and_update(
+        {"_id": ObjectId(current_user['_id'])}, {"$push": {"history": {
             "itemId": item_id,
             "txHash": str(web3.to_hex(tx_hash)),
             "type": "sell"
         }}}
     )
+    # users_db.update_one(
+    #     {"_id": ObjectId(item['userId'])}, {"$push": {"history": {
+    #         "itemId": item_id,
+    #         "txHash": str(web3.to_hex(tx_hash)),
+    #         "type": "sell"
+    #     }}}
+    # )
 
     # delete from favorites
     users_db.update_many(
@@ -109,11 +123,13 @@ def buyItem(item_id):
     )
 
     # delete from owner's items
-    users_db.update_one(
+    users_db.find_one_and_update(
         {"_id": ObjectId(item['userId'])}, {"$pull": {"items": item_id}}
     )
 
     # delete item from items_db
-    items_db.delete_one({'_id': item_id})
+    items_db.find_one_and_delete(
+        {"_id": ObjectId(item_id)}
+    )
 
     return jsonify({'message': 'success', "hash": str(web3.to_hex(tx_hash)), "code": 200})
