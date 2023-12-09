@@ -83,7 +83,6 @@ def buyItem(item_id):
         data=data
     )
 
-    # TODO why is this not working? change update?
     # add item to user's history
     # users_db.update_one(
     #     {"_id": ObjectId(current_user['_id'])}, {"$push": {"history": {
@@ -92,7 +91,7 @@ def buyItem(item_id):
     #         "type": "buy"
     #     }}}
     # )
-    hello = users_db.find_one_and_update(
+    users_db.find_one_and_update(
         {"_id": current_user['_id']}, {"$push": {"history": {
             "itemId": item_id,
             "txHash": str(web3.to_hex(tx_hash)),
@@ -103,10 +102,7 @@ def buyItem(item_id):
         }}}
     )
 
-    # if hello['n'] == 0:
-    #     return jsonify({'message': 'user buy', "code": 401})
-
-    hello = users_db.find_one_and_update(
+    users_db.find_one_and_update(
         {"_id": item['userId']}, {"$push": {"history": {
             "itemId": item_id,
             "txHash": str(web3.to_hex(tx_hash)),
@@ -117,8 +113,6 @@ def buyItem(item_id):
         }}}
     )
 
-    # if hello['n'] == 0:
-    #     return jsonify({'message': 'user sell', "code": 410})
     # users_db.update_one(
     #     {"_id": ObjectId(item['userId'])}, {"$push": {"history": {
     #         "itemId": item_id,
@@ -128,31 +122,23 @@ def buyItem(item_id):
     # )
 
     # delete from favorites
-    hello = users_db.update_many(
+    users_db.update_many(
         {}, {"$pull": {"favorites": item_id}}
     )
-    # if hello['n'] == 0:
-    #     return jsonify({'message': 'update many', "code": 402})
 
     # delete from buckets
-    hello = users_db.update_many(
+    users_db.update_many(
         {}, {"$pull": {"bucket": item_id}}
     )
-    # if hello['n'] == 0:
-    #     return jsonify({'message': 'update many 2', "code": 403})
 
     # delete from owner's items
-    hello = users_db.find_one_and_update(
+    users_db.find_one_and_update(
         {"_id": ObjectId(item['userId'])}, {"$pull": {"items": item_id}}
     )
-    # if hello['n'] == 0:
-    #     return jsonify({'message': 'find one and update', "code": 404})
 
     # delete item from items_db
-    hello = items_db.find_one_and_delete(
+    items_db.find_one_and_delete(
         {"_id": ObjectId(item_id)}
     )
-    # if hello['n'] == 0:
-    #     return jsonify({'message': 'find one and delete', "code": 405})
 
     return jsonify({'message': 'success', "hash": str(web3.to_hex(tx_hash)), "code": 200})

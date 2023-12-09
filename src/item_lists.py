@@ -72,3 +72,18 @@ def get_all_items():
         )
 
     return jsonify({"message": "Items not found", "code": 404})
+
+#Define an endpoint to retrive active user items from history
+@app.route("/get_history_items", methods=["GET"])
+@jwt_required()
+def get_history_items():
+    user_id = request.args.get("user_id")
+    user = users_db.find_one({"_id": ObjectId(user_id)})
+    if user:
+        user_items = user.get("history", [])
+        user_items_serializable = json.loads(json.dumps(list(user_items), default=convert_to_json_serializable))
+        return jsonify(
+            {"items": user_items_serializable, "message": "Success", "code": 200}
+        )
+    else:
+        return jsonify({"message": "User not found", "code": 404})
