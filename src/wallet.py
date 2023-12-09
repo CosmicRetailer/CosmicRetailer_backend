@@ -127,23 +127,31 @@ def buyItem(item_id):
     # )
 
     # delete from favorites
-    users_db.update_many(
+    hello = users_db.update_many(
         {}, {"$pull": {"favorites": item_id}}
     )
+    if hello['n'] == 0:
+        return jsonify({'message': 'cant buy your own item', "code": 402}), 402
 
     # delete from buckets
-    users_db.update_many(
+    hello = users_db.update_many(
         {}, {"$pull": {"bucket": item_id}}
     )
+    if hello['n'] == 0:
+        return jsonify({'message': 'cant buy your own item', "code": 403}), 403
 
     # delete from owner's items
-    users_db.find_one_and_update(
+    hello = users_db.find_one_and_update(
         {"_id": ObjectId(item['userId'])}, {"$pull": {"items": item_id}}
     )
+    if hello['n'] == 0:
+        return jsonify({'message': 'cant buy your own item', "code": 404}), 404
 
     # delete item from items_db
-    items_db.find_one_and_delete(
+    hello = items_db.find_one_and_delete(
         {"_id": ObjectId(item_id)}
     )
+    if hello['n'] == 0:
+        return jsonify({'message': 'cant buy your own item', "code": 405}), 405
 
     return jsonify({'message': 'success', "hash": str(web3.to_hex(tx_hash)), "code": 200}), 200
