@@ -129,7 +129,7 @@ def buyItem(item_id):
         {}, {"$pull": {"favorites": item_id}}
     )
 
-    # delte from buckets
+    # delete from buckets
     users_db.update_many(
         {}, {"$pull": {"bucket": item_id}}
     )

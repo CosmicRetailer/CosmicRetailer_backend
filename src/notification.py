@@ -13,10 +13,12 @@ def get_notifications():
 
     notifications = notifications_db.find({"userId": user_id})
     if notifications:
-        notifications_serializable = serialize_object_ids(notifications)
+        notifications_serializable = json.loads(
+            json.dumps(notifications, default=convert_to_json_serializable)
+        )
 
         # delte notification from db
-        notifications_db.delete_many({"userId": user_id})
+        # notifications_db.delete_many({"userId": user_id})
 
         return jsonify({
             "notifications": notifications_serializable,
