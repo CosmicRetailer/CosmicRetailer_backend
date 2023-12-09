@@ -35,6 +35,7 @@ def buyItem(item_id):
     to_account = response.json()['walletAddress']
 
     account = web3.to_checksum_address(from_account)
+    to_account = web3.to_checksum_address(to_account)
     balance = web3.eth.get_balance(account)
 
     api_request = "https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USDT"
@@ -102,8 +103,8 @@ def buyItem(item_id):
         }}}
     )
 
-    if hello['n'] == 0:
-        return jsonify({'message': 'user buy', "code": 401})
+    # if hello['n'] == 0:
+    #     return jsonify({'message': 'user buy', "code": 401})
 
     hello = users_db.find_one_and_update(
         {"_id": item['userId']}, {"$push": {"history": {
@@ -116,8 +117,8 @@ def buyItem(item_id):
         }}}
     )
 
-    if hello['n'] == 0:
-        return jsonify({'message': 'user sell', "code": 410})
+    # if hello['n'] == 0:
+    #     return jsonify({'message': 'user sell', "code": 410})
     # users_db.update_one(
     #     {"_id": ObjectId(item['userId'])}, {"$push": {"history": {
     #         "itemId": item_id,
@@ -130,28 +131,28 @@ def buyItem(item_id):
     hello = users_db.update_many(
         {}, {"$pull": {"favorites": item_id}}
     )
-    if hello['n'] == 0:
-        return jsonify({'message': 'update many', "code": 402})
+    # if hello['n'] == 0:
+    #     return jsonify({'message': 'update many', "code": 402})
 
     # delete from buckets
     hello = users_db.update_many(
         {}, {"$pull": {"bucket": item_id}}
     )
-    if hello['n'] == 0:
-        return jsonify({'message': 'update many 2', "code": 403})
+    # if hello['n'] == 0:
+    #     return jsonify({'message': 'update many 2', "code": 403})
 
     # delete from owner's items
     hello = users_db.find_one_and_update(
         {"_id": ObjectId(item['userId'])}, {"$pull": {"items": item_id}}
     )
-    if hello['n'] == 0:
-        return jsonify({'message': 'find one and update', "code": 404})
+    # if hello['n'] == 0:
+    #     return jsonify({'message': 'find one and update', "code": 404})
 
     # delete item from items_db
     hello = items_db.find_one_and_delete(
         {"_id": ObjectId(item_id)}
     )
-    if hello['n'] == 0:
-        return jsonify({'message': 'find one and delete', "code": 405})
+    # if hello['n'] == 0:
+    #     return jsonify({'message': 'find one and delete', "code": 405})
 
     return jsonify({'message': 'success', "hash": str(web3.to_hex(tx_hash)), "code": 200})
