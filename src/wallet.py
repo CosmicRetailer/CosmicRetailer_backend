@@ -66,7 +66,11 @@ def buyItem(item_id):
         'maxPriorityFeePerGas': web3.to_wei('3', 'gwei'),
         'chainId': 11155111
     }
-    gas = web3.eth.estimate_gas(tx)
+    try:
+        gas = web3.eth.estimate_gas(tx)
+    except:
+        return jsonify({'message': 'not enough money', "code": 400})
+    
     tx['gas'] = gas
     signed_tx = web3.eth.account.sign_transaction(tx, pvk)
     tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
@@ -84,15 +88,8 @@ def buyItem(item_id):
     )
 
     # add item to user's history
-    # users_db.update_one(
-    #     {"_id": ObjectId(current_user['_id'])}, {"$push": {"history": {
-    #         "itemId": item_id,
-    #         "txHash": str(web3.to_hex(tx_hash)),
-    #         "type": "buy"
-    #     }}}
-    # )
-    users_db.find_one_and_update(
-        {"_id": current_user['_id']}, {"$push": {"history": {
+    users_db.update_one(
+        {"_id": ObjectId(current_user['_id'])}, {"$push": {"history": {
             "itemId": item_id,
             "txHash": str(web3.to_hex(tx_hash)),
             "type": "buy",
@@ -101,9 +98,30 @@ def buyItem(item_id):
             "photoUrl": item['photoUrl'],
         }}}
     )
+    # users_db.find_one_and_update(
+    #     {"_id": current_user['_id']}, {"$push": {"history": {
+    #         "itemId": item_id,
+    #         "txHash": str(web3.to_hex(tx_hash)),
+    #         "type": "buy",
+    #         "itemName": item['name'],
+    #         "price": item['price'],
+    #         "photoUrl": item['photoUrl'],
+    #     }}}
+    # )
 
-    users_db.find_one_and_update(
-        {"_id": item['userId']}, {"$push": {"history": {
+    # users_db.find_one_and_update(
+    #     {"_id": item['userId']}, {"$push": {"history": {
+    #         "itemId": item_id,
+    #         "txHash": str(web3.to_hex(tx_hash)),
+    #         "type": "sell",
+    #         "itemName": item['name'],
+    #         "price": item['price'],
+    #         "photoUrl": item['photoUrl'],
+    #     }}}
+    # )
+
+    users_db.update_one(
+        {"_id": ObjectId(item['userId'])}, {"$push": {"history": {
             "itemId": item_id,
             "txHash": str(web3.to_hex(tx_hash)),
             "type": "sell",
@@ -112,14 +130,6 @@ def buyItem(item_id):
             "photoUrl": item['photoUrl'],
         }}}
     )
-
-    # users_db.update_one(
-    #     {"_id": ObjectId(item['userId'])}, {"$push": {"history": {
-    #         "itemId": item_id,
-    #         "txHash": str(web3.to_hex(tx_hash)),
-    #         "type": "sell"
-    #     }}}
-    # )
 
     # delete from favorites
     users_db.update_many(
