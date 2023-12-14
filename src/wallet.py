@@ -6,7 +6,6 @@ from bson.objectid import ObjectId
 from flask_jwt_extended import jwt_required, current_user  # Import JWT
 import json
 import requests
-import logging
 
 @app.route('/get_balance', methods=['GET'])
 @jwt_required()

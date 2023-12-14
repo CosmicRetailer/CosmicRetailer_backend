@@ -215,9 +215,6 @@ def update_wallet_address():
     )
     return jsonify({"message": "Success", "code": 200})
 
-
-
-
 @app.route("/get_history", methods=["GET"])
 @jwt_required()  # Requires a valid JWT token
 def get_history():

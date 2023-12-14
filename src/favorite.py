@@ -68,22 +68,22 @@ def get_favorites():
 
     if user:
         favorite_items = user.get("favorites", [])
-        favorites = []
+        # favorites = []
 
-        for item_obj in favorite_items.copy():  # Iterate over objects
-            item = ObjectId(item_obj["_id"])  # Convert to ObjectId
-            item_doc = items_db.find_one({"_id": item})  # Use ObjectId in query
-            if item_doc:
-                favorites.append(item_doc)
-            else: 
-                favorite_items.remove(item)  # Remove item ID
-                users_db.update_one(
-                    {"_id": user["_id"]},
-                    {"$set": {"favorites": favorite_items}},
-                )
+        # for item_obj in favorite_items.copy():  # Iterate over objects
+        #     item = ObjectId(item_obj["_id"])  # Convert to ObjectId
+        #     item_doc = items_db.find_one({"_id": item})  # Use ObjectId in query
+        #     if item_doc:
+        #         favorites.append(item_doc)
+        #     else: 
+        #         favorite_items.remove(item)  # Remove item ID
+        #         users_db.update_one(
+        #             {"_id": user["_id"]},
+        #             {"$set": {"favorites": favorite_items}},
+        #         )
 
         # Serialize items to JSON
-        items_serializable = json.loads(json.dumps(favorites, default=convert_to_json_serializable))
+        items_serializable = json.loads(json.dumps(favorite_items, default=convert_to_json_serializable))
 
         return jsonify({"favorites": items_serializable, "message": "Success", "code": 200})
     else:
